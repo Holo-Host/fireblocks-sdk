@@ -3,7 +3,7 @@ use crate::{
     jwtclient::JwtSigner,
     types::{
         AssetResponse, CreateTransactionResponse, CreateVaultRequest, CreateVaultResponse,
-        DepositAddressResponse, TransactionArguments, TransactionDetails, VaultAccountResponse, VaultAccountPaginatedResponse,
+        DepositAddressResponse, TransactionArguments, TransactionDetails, VaultAccountResponse, VaultAccountPaginatedResponse, AccountDetails,
     },
     FireblocksError, Result,
 };
@@ -12,7 +12,7 @@ use jsonwebtoken::EncodingKey;
 use reqwest::{Client, RequestBuilder};
 use serde::{de::DeserializeOwned, Serialize};
 
-const FIREBLOCKS_API: &str = "https://api.fireblocks.io";
+const FIREBLOCKS_API: &str = "https://sandbox-api.fireblocks.io";
 const VERSION: &str = "v1";
 
 #[derive(Debug, Clone)]
@@ -25,8 +25,12 @@ pub struct FireblocksClient {
 
 // This impl block contains the necessary API calls for interacting with Ethereum
 impl FireblocksClient {
-    pub fn new(key: EncodingKey, api_key: &str) -> Self {
-        Self::new_with_url(key, api_key, FIREBLOCKS_API)
+    pub fn new(key: EncodingKey, api_key: &str, api_url_override: Option<&str>) -> Self {
+        let api_url = match api_url_override {
+            Some(url) => url,
+            None => FIREBLOCKS_API
+        };
+        Self::new_with_url(key, api_key, api_url)
     }
 
     pub fn new_with_url(key: EncodingKey, api_key: &str, url: &str) -> Self {
@@ -43,6 +47,10 @@ impl FireblocksClient {
         tx: TransactionArguments,
     ) -> Result<CreateTransactionResponse> {
         self.post("transactions", tx).await
+    }
+
+    pub async fn get_account_details(&self, asset_id: &str, account_id: &str) -> Result<AccountDetails> {
+        self.get(&format!("vault/accounts/{}/{}", account_id, asset_id)).await
     }
 
     pub async fn transaction(&self, txid: &str) -> Result<TransactionDetails> {
@@ -132,6 +140,13 @@ impl FireblocksClient {
 mod tests {
     use super::*;
 
+    // this section implements method useful in tests
+    impl FireblocksClient {
+        pub fn url(&self) -> &str {
+            &self.url
+        }
+    }
+
     #[tokio::test]
     async fn v1_api() {
         let fireblocks_key = std::env::var("FIREBLOCKS_API_SECRET_PATH").unwrap();
@@ -139,7 +154,9 @@ mod tests {
 
         let rsa_pem = std::fs::read(fireblocks_key).unwrap();
         let key = EncodingKey::from_rsa_pem(&rsa_pem[..]).unwrap();
-        let client = FireblocksClient::new(key, &api_key);
+        let client = FireblocksClient::new(key, &api_key, None);
+
+        assert_eq!(client.url(), FIREBLOCKS_API);
 
         let _res = client.vaults().await.unwrap();
         let _res = client.vault("0").await.unwrap();
@@ -156,4 +173,6 @@ mod tests {
             .await
             .unwrap();
     }
+
+    // test api url
 }
