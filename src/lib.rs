@@ -81,6 +81,8 @@ pub struct Config {
     pub chain_id: u64,
     /// Your vault's account id.
     pub account_id: String,
+    /// Timeout for reaching CONFIRMED state of transaction posted to Fireblocks
+    pub timeout: i128,
 }
 
 impl Config {
@@ -91,6 +93,7 @@ impl Config {
         api_key: &str,
         account_id: &str,
         chain_id: u64,
+        timeout: i128,
     ) -> Result<Self> {
         let rsa_pem = std::fs::read(key.as_ref())?;
         let key = EncodingKey::from_rsa_pem(&rsa_pem)?;
@@ -100,6 +103,7 @@ impl Config {
             chain_id,
             api_key: api_key.to_string(),
             account_id: account_id.to_string(),
+            timeout,
         })
     }
 }
@@ -143,7 +147,7 @@ impl FireblocksSigner {
                 .parse()
                 .expect("could not parse as address"),
             account_id: cfg.account_id,
-            timeout: 60_000,
+            timeout: cfg.timeout,
         }
     }
 
@@ -204,6 +208,7 @@ async fn test_signer() -> FireblocksSigner {
         &std::env::var("FIREBLOCKS_API_KEY").unwrap(),
         &std::env::var("FIREBLOCKS_SOURCE_VAULT_ACCOUNT").unwrap(),
         5,
+        60_000,
     )
     .unwrap();
     FireblocksSigner::new(config).await
