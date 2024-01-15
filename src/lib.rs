@@ -82,7 +82,7 @@ pub struct Config {
     /// Your vault's account id.
     pub account_id: String,
     /// Timeout for reaching CONFIRMED state of transaction posted to Fireblocks
-    pub timeout: i128,
+    pub timeout: u128,
 }
 
 impl Config {
@@ -93,7 +93,7 @@ impl Config {
         api_key: &str,
         account_id: &str,
         chain_id: u64,
-        timeout: i128,
+        timeout: u128,
     ) -> Result<Self> {
         let rsa_pem = std::fs::read(key.as_ref())?;
         let key = EncodingKey::from_rsa_pem(&rsa_pem)?;
