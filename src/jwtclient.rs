@@ -1,12 +1,12 @@
 use jsonwebtoken::{errors as jwterrors, Algorithm, EncodingKey, Header};
 
 use digest::Digest;
+use rand::Rng;
 use rustc_hex::ToHex;
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 use std::time::{SystemTime, UNIX_EPOCH};
 use thiserror::Error;
-use rand::Rng;
 
 const EXPIRY: u64 = 55;
 

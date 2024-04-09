@@ -2,8 +2,9 @@
 use crate::{
     jwtclient::JwtSigner,
     types::{
-        AssetResponse, CreateTransactionResponse, CreateVaultRequest, CreateVaultResponse,
-        DepositAddressResponse, TransactionArguments, TransactionDetails, VaultAccountResponse, VaultAccountPaginatedResponse, AccountDetails,
+        AccountDetails, AssetResponse, CreateTransactionResponse, CreateVaultRequest,
+        CreateVaultResponse, DepositAddressResponse, TransactionArguments, TransactionDetails,
+        VaultAccountPaginatedResponse, VaultAccountResponse,
     },
     FireblocksError, Result,
 };
@@ -28,7 +29,7 @@ impl FireblocksClient {
     pub fn new(key: EncodingKey, api_key: &str, api_url_override: Option<&str>) -> Self {
         let api_url = match api_url_override {
             Some(url) => url,
-            None => FIREBLOCKS_API
+            None => FIREBLOCKS_API,
         };
         Self::new_with_url(key, api_key, api_url)
     }
@@ -49,8 +50,13 @@ impl FireblocksClient {
         self.post("transactions", tx).await
     }
 
-    pub async fn get_account_details(&self, asset_id: &str, account_id: &str) -> Result<AccountDetails> {
-        self.get(&format!("vault/accounts/{}/{}", account_id, asset_id)).await
+    pub async fn get_account_details(
+        &self,
+        asset_id: &str,
+        account_id: &str,
+    ) -> Result<AccountDetails> {
+        self.get(&format!("vault/accounts/{}/{}", account_id, asset_id))
+            .await
     }
 
     pub async fn transaction(&self, txid: &str) -> Result<TransactionDetails> {
@@ -62,7 +68,7 @@ impl FireblocksClient {
 impl FireblocksClient {
     async fn get<R: DeserializeOwned>(&self, path: &str) -> Result<R> {
         let path = format!("/{}/{}", self.version, path);
-        let req = self.client.get(&format!("{}{}", self.url, path));
+        let req = self.client.get(format!("{}{}", self.url, path));
         self.send(&path, req, ()).await
     }
 
@@ -70,7 +76,7 @@ impl FireblocksClient {
         let path = format!("/{}/{}", self.version, path);
         let req = self
             .client
-            .post(&format!("{}{}", self.url, path))
+            .post(format!("{}{}", self.url, path))
             .json(&body);
         self.send(&path, req, body).await
     }
