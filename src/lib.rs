@@ -128,9 +128,10 @@ impl FireblocksSigner {
         let fireblocks = FireblocksClient::new(cfg.key, &cfg.api_key, api_url_override);
         let asset_id = match cfg.chain_id {
             1 => "ETH",
-            3 => "ETH_TEST",
-            5 => "ETH_TEST3",
+            3 => "ETH_TEST",    // Ropstein
+            5 => "ETH_TEST3",   // Goerli
             42 => "ETH_TEST2",
+            11155111 => "ETH_TEST5", // Sepolia
             _ => panic!("Unsupported chain_id"),
         };
 
