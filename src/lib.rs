@@ -122,15 +122,16 @@ impl FireblocksSigner {
             Ok(string) => {
                 local = string;
                 Some(local.as_str())
-            },
-            Err(_) => None
+            }
+            Err(_) => None,
         };
         let fireblocks = FireblocksClient::new(cfg.key, &cfg.api_key, api_url_override);
         let asset_id = match cfg.chain_id {
             1 => "ETH",
-            3 => "ETH_TEST",
-            5 => "ETH_TEST3",
+            3 => "ETH_TEST",  // Ropstein
+            5 => "ETH_TEST3", // Goerli
             42 => "ETH_TEST2",
+            11155111 => "ETH_TEST5", // Sepolia
             _ => panic!("Unsupported chain_id"),
         };
 
@@ -171,7 +172,10 @@ impl FireblocksSigner {
     }
 
     pub async fn get_available(&self, asset_id: &str) -> Result<String> {
-        let account_details = self.fireblocks.get_account_details(asset_id, &self.account_id).await?;
+        let account_details = self
+            .fireblocks
+            .get_account_details(asset_id, &self.account_id)
+            .await?;
 
         Ok(account_details.available)
     }
