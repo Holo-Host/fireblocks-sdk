@@ -206,14 +206,19 @@ impl FireblocksSigner {
 }
 
 #[cfg(test)]
-async fn test_signer() -> FireblocksSigner {
-    let config = Config::new(
-        std::env::var("FIREBLOCKS_API_SECRET_PATH").unwrap(),
-        &std::env::var("FIREBLOCKS_API_KEY").unwrap(),
-        &std::env::var("FIREBLOCKS_SOURCE_VAULT_ACCOUNT").unwrap(),
-        11155111,
-        60_000,
-    )
-    .unwrap();
-    FireblocksSigner::new(config).await
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_signer() {
+        let config = Config::new(
+            std::env::var("FIREBLOCKS_API_SECRET_PATH").unwrap(),
+            &std::env::var("FIREBLOCKS_API_KEY").unwrap(),
+            &std::env::var("FIREBLOCKS_SOURCE_VAULT_ACCOUNT").unwrap(),
+            11155111,
+            60_000,
+        )
+        .unwrap();
+        FireblocksSigner::new(config).await;
+    }
 }
