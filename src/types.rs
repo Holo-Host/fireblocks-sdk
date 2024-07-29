@@ -96,7 +96,8 @@ pub struct TransactionArguments {
     pub source: TransferPeerPath,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub destination: Option<DestinationTransferPeerPath>,
-    pub amount: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<String>,
     pub external_tx_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gas_price: Option<String>,
@@ -147,6 +148,7 @@ pub enum TransactionOperation {
     BURN,
     SUPPLY_TO_COMPOUND,
     REDEEM_FROM_COMPOUND,
+    TYPED_MESSAGE,
 }
 
 #[allow(non_camel_case_types)]
@@ -226,7 +228,7 @@ pub struct TransactionDetails {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SignedMessageResponse {
-    content: String,
+    pub content: String,
     algorithm: String,
     derivation_path: Vec<usize>,
     pub signature: SignatureResponse,
