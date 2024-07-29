@@ -165,9 +165,9 @@ mod tests {
         assert_eq!(client.url(), FIREBLOCKS_API);
 
         let _res = client.vaults().await.unwrap();
-        let _res = client.vault("0").await.unwrap();
-        let _res = client.vault_addresses("0", "ETH_TEST3").await.unwrap();
-        let _res = client.vault_wallet("0", "ETH_TEST3").await.unwrap();
+        let _res = client.vault("1").await.unwrap();
+        let _res = client.vault_addresses("1", "ETH_TEST5").await.unwrap();
+        let _res = client.vault_wallet("1", "ETH_TEST5").await.unwrap();
         let _res = client
             // Creating a vault does not require approval?
             .new_vault(CreateVaultRequest {

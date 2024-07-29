@@ -211,7 +211,7 @@ async fn test_signer() -> FireblocksSigner {
         std::env::var("FIREBLOCKS_API_SECRET_PATH").unwrap(),
         &std::env::var("FIREBLOCKS_API_KEY").unwrap(),
         &std::env::var("FIREBLOCKS_SOURCE_VAULT_ACCOUNT").unwrap(),
-        5,
+        11155111,
         60_000,
     )
     .unwrap();
