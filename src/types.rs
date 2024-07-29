@@ -96,7 +96,8 @@ pub struct TransactionArguments {
     pub source: TransferPeerPath,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub destination: Option<DestinationTransferPeerPath>,
-    pub amount: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<String>,
     pub external_tx_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gas_price: Option<String>,
@@ -105,6 +106,8 @@ pub struct TransactionArguments {
     pub note: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fee_level: Option<FeeLevel>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_parameters: Option<ExtraParameters>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -145,6 +148,7 @@ pub enum TransactionOperation {
     BURN,
     SUPPLY_TO_COMPOUND,
     REDEEM_FROM_COMPOUND,
+    TYPED_MESSAGE,
 }
 
 #[allow(non_camel_case_types)]
@@ -224,7 +228,7 @@ pub struct TransactionDetails {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SignedMessageResponse {
-    content: String,
+    pub content: String,
     algorithm: String,
     derivation_path: Vec<usize>,
     pub signature: SignatureResponse,
@@ -242,6 +246,12 @@ pub struct SignatureResponse {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct ExtraParameters {
+    pub raw_message_data: RawMessageData,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RawMessageData {
     pub messages: Vec<UnsignedMessage>,
 }
@@ -250,6 +260,17 @@ pub struct RawMessageData {
 #[serde(rename_all = "camelCase")]
 pub struct UnsignedMessage {
     pub content: String,
+    pub r#type: MessageType,
+}
+
+#[allow(non_camel_case_types)]
+#[derive(Debug, Serialize, Deserialize)]
+#[allow(clippy::upper_case_acronyms)]
+pub enum MessageType {
+    EIP191,
+    EIP712,
+    TIP191,
+    BTC_MESSAGE,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
