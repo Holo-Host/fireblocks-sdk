@@ -247,8 +247,8 @@ pub struct SignatureResponse {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum ExtraParameters {
-    TypedMessage { raw_message_data: RawMessageData },
-    ContractCall { contract_call_data: String },
+    RawMessageData { messages: Vec<UnsignedMessage> },
+    ContractCallData (String),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
