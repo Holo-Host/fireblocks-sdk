@@ -91,7 +91,7 @@ pub struct DepositAddressResponse {
 #[serde(rename_all = "camelCase")]
 pub struct TransactionArguments {
     #[serde(rename = "assetId")]
-    pub asset_id: String,
+    pub asset_id: Option<String>,
     pub operation: TransactionOperation,
     pub source: TransferPeerPath,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -189,6 +189,7 @@ pub enum TransactionStatus {
     QUEUED,
     PENDING_SIGNATURE,
     PENDING_AUTHORIZATION,
+    PENDING_ENRICHMENT,
     PENDING_3RD_PARTY_MANUAL_APPROVAL,
     PENDING_3RD_PARTY,
     /**

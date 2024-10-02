@@ -195,7 +195,7 @@ impl FireblocksSigner {
             use TransactionStatus::*;
             // Loops in pending signature
             match details.status {
-                COMPLETED => return func(details),
+                COMPLETED | PENDING_ENRICHMENT => return func(details),
                 BLOCKED | CANCELLED | FAILED => {
                     return Err(FireblocksError::TxError(details.status, details.sub_status))
                 }
