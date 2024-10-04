@@ -91,7 +91,7 @@ pub struct DepositAddressResponse {
 #[serde(rename_all = "camelCase")]
 pub struct TransactionArguments {
     #[serde(rename = "assetId")]
-    pub asset_id: Option<String>,
+    pub asset_id: String,
     pub operation: TransactionOperation,
     pub source: TransferPeerPath,
     #[serde(skip_serializing_if = "Option::is_none")]
